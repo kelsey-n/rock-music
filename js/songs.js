@@ -33,16 +33,19 @@ const circlesChartGroup = circlesChart.selectAll('g')
   .data(topRockSongs)
   .join('g')
 
+// First, the circles, for which we will need a scale
+// Circles should always be sized based on their area, not their radius!
+const radiusMax = 40;
 const circlesScale = d3.scaleLinear()
-   .domain([0, d3.max(topRockSongs, d => d.sales_and_streams)])
-   .range([0, 4000]); // ranges of areas of circles
+    .domain([0, d3.max(topRockSongs, d => d.sales_and_streams)])
+    .range([0, Math.PI * Math.pow(radiusMax, 2)]);
 
 const circleWidth = circlesChartWidth / topRockSongs.length
 circlesChartGroup.append('circle')
   .attr('cx', (d,i) => circleWidth/2 + (circleWidth * i))
   .attr('cy', circlesChartHeight / 2)
   .attr('r', d => Math.sqrt(circlesScale(d.sales_and_streams) / Math.PI))
-  .attr('fill', 'steelblue')
+  .attr('fill', '#8da0cb')
 
 circlesChartGroup.append('text')
    .attr('class', 'label label-songValue')
@@ -58,12 +61,3 @@ circlesChartGroup.append('text')
   .attr('text-anchor', 'middle')
   .style('font-size', '12px')
   .text(d => d.title);
-
-// barChart.selectAll('.label-album')
-//  .data(topRockAlbums)
-//  .join('text')
-//     .attr('class', 'label label-songName')
-//     .attr('x', marginLeft - 5)
-//     .attr('y', (d, i) => (barMargin + (barThickness + barMargin) * i) + 14)
-//     .attr('text-anchor', 'end')
-//     .text(d => d.artist + ', ' + d.title);
